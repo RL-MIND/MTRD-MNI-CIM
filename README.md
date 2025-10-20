@@ -6,29 +6,6 @@ This project presents a novel **Multi-Teacher Robust Distillation (MTRD)** train
 
 Our proposed approach offers a **generalized solution** that is independent of network architecture and task type, making it applicable to a wide range of tasks including **image classification**, **target segmentation**, and **image denoising**. The method significantly mitigates accuracy degradation in memristor-based CIM systems, paving the way for more reliable and scalable deployment in real-world applications.
 
-## Project Structure
-
-```
-MTRD-MNI-CIM/
-├── classification/          # Image classification tasks
-│   ├── README.md           # Classification task documentation
-│   ├── models/            # Classification models
-│   ├── data/              # Classification datasets
-│   └── experiments/       # Classification experimental results
-├── segmentation/           # Image segmentation tasks
-│   ├── README.md          # Segmentation task documentation
-│   ├── models/            # Segmentation models
-│   ├── data/              # Segmentation datasets
-│   └── experiments/       # Segmentation experimental results
-├── denoising/             # Image denoising tasks
-│   ├── README.md          # Denoising task documentation
-│   ├── models/            # Denoising models
-│   ├── data/              # Denoising datasets
-│   └── experiments/       # Denoising experimental results
-├── utils/                 # Utility functions
-├── configs/               # Configuration files
-└── requirements.txt       # Dependencies list
-```
 
 ## Key Contributions
 
@@ -90,15 +67,6 @@ We fabricated a **one-transistor-one-memristor (1T1R) chip** to verify the class
    - Segmentation: `cd segmentation/`
    - Denoising: `cd denoising/`
 
-## Performance Summary
-
-| Task | Dataset | Key Metrics | Best Results |
-|------|---------|-------------|--------------|
-| Classification | CIFAR-10 | Accuracy / F1-Score | 33.7% improvement over nominal networks |
-| Segmentation | - | IoU / Dice Score | - |
-| Denoising | - | PSNR / SSIM | - |
-
-*Detailed experimental results and analysis can be found in the respective task directories*
 
 ## Citation
 
