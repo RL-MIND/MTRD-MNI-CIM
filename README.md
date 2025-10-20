@@ -16,6 +16,7 @@ Our proposed approach offers a **generalized solution** that is independent of n
 - 🌐 **Universal Applicability**: Best performance compared to other variation-aware algorithms
 
 ## Task Validation
+The pretrained checkpoints for the following three validation tasks can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1JyQzh-b9dRNvtj4S4Emmkkenm1TQbmG1?usp=sharing).
 
 ### 1. Image Classification
 Deep learning-based image classification tasks designed to evaluate the robustness of MTRD method against memristor non-idealities in classification scenarios.
