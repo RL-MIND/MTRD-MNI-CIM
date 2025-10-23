@@ -1,4 +1,4 @@
-# Multi-Teacher Robust Distillation for Memristor-based Computing-in-Memory (MTRD-MNI-CIM)
+# Robust distillation for compute-in-memory: Realizing reliable intelligence using imperfect memristors
 
 ## Project Overview
 
