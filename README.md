@@ -6,6 +6,9 @@ This project presents a novel **Multi-Teacher Robust Distillation (MTRD)** train
 
 Our proposed approach offers a **generalized solution** that is independent of network architecture and task type, making it applicable to a wide range of tasks including **image classification**, **target segmentation**, and **image denoising**. The method significantly mitigates accuracy degradation in memristor-based CIM systems, paving the way for more reliable and scalable deployment in real-world applications.
 
+## Simulation tools
+
+This project uses two simulation tools to evaluate memristor-based CIM non-idealities. For circuit-level CIM evaluation, we use [NeuroSim](https://github.com/neurosim/NeuroSim/tree/2DInferenceV1.5-dev), which supports hardware-aware inference simulation, device variation, stuck-at faults, retention effects, read/output noise, memory-state configuration, and PPA estimation for CIM accelerators. For algorithm-level analog training and inference simulation, we use [AIHWKit](https://github.com/IBM/aihwkit), an open-source PyTorch toolkit from IBM for modeling analog in-memory computing layers and device non-idealities such as device-to-device variation, cycle-to-cycle variation, weight noise, output noise, and conductance drift.
 
 ## Key Contributions
 
