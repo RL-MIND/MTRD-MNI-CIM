@@ -55,7 +55,7 @@ We fabricated a **one-transistor-one-memristor (1T1R) chip** to verify the class
 
 1. **Clone Repository**
    ```bash
-   git clone https://github.com/RL-VIG/MTRD-MNI-CIM
+   git clone https://github.com/RL-MIND/MTRD-MNI-CIM.git
    cd MTRD-MNI-CIM
    ```
 
