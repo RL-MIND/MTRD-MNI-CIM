@@ -1,5 +1,8 @@
 # Robust distillation for compute-in-memory: Realizing reliable intelligence using imperfect memristors
 
+> [!IMPORTANT]
+> **Code Ocean reproducibility version available:** Browse the complete exported capsule on the [`code-ocean` branch](https://github.com/RL-MIND/MTRD-MNI-CIM/tree/code-ocean), including the locked environment, capsule metadata, and step-by-step instructions in [`REPRODUCING.md`](https://github.com/RL-MIND/MTRD-MNI-CIM/blob/code-ocean/REPRODUCING.md). The `main` branch remains the original reference implementation.
+
 ## Project Overview
 
 This project presents a novel **Multi-Teacher Robust Distillation (MTRD)** training method designed to address non-idealities in **Memristor-based Computing-in-Memory (CIM)** architectures. Memristors are inherently vulnerable to manufacturing-induced variations and operational fluctuations, which cause deviations in programmed weights and compromise the computational accuracy of deep neural networks (DNNs).
