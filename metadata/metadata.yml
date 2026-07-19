@@ -1,0 +1,29 @@
+metadata_version: 1
+name: Copy of MTRD
+description: Memristor-based computing-in-memory (CIM) architectures have emerged
+  as a promising solution for enhancing the computational efficiency of deep neural
+  networks (DNNs). However, memristors are inherently vulnerable to non-idealities,
+  including manufacturing-induced variations and operational fluctuations. These non-idealities
+  cause deviations in programmed weights, compromising the computational accuracy
+  of neural networks. Although software-based approaches exist to mitigate these issues,
+  they typically target specific error types or require additional components and
+  specialized architectures. These requirements significantly limit the scalability
+  and broader adoption of CIM systems. In this study, we propose a multi-teacher robust
+  distillation training framework to address the discrepancies between analytically
+  derived training information and the imprecision inherent in analog devices. This
+  framework offers a generalized solution that is independent of network architecture
+  and task type, making it applicable to a wide range of tasks, including image classification,
+  object segmentation, and image denoising. Moreover, it can be seamlessly integrated
+  into models exhibiting various non-ideal behaviors. The proposed method significantly
+  mitigates accuracy degradation in memristor-based CIM systems, paving the way for
+  more reliable and scalable deployment in real-world applications. Experimentally,
+  we created a one-transistor-one-memristor (1T1R) chip to verify the classification
+  and denoising tasks. The results demonstrated that, in a statistical distribution
+  with a standard deviation of 0.5 in weight variations, the accuracy rate was 33.7%
+  higher than that of nominal networks on classification with CIFAR-10. Compared to
+  other variation-aware algorithms, it also achieved the best performance and generalization
+  ability.
+authors:
+- name: zhiping wu
+  affiliations:
+  - name: nanjing university

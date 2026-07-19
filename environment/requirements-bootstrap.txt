@@ -1,0 +1,10 @@
+# Hash-locked packaging tools for CPython 3.10 on Linux x86-64.
+--only-binary=:all:
+--require-hashes
+
+pip==25.1.1 \
+    --hash=sha256:2913a38a2abf4ea6b64ab507bd9e967f3b53dc1ede74b01b0931e1ce548751af
+setuptools==78.1.1 \
+    --hash=sha256:c3a9c4211ff4c309edb8b8c4f1cbfa7ae324c4ba9f91ff254e3d305b9fd54561
+wheel==0.45.1 \
+    --hash=sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248

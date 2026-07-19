@@ -1,0 +1,5 @@
+{
+	"version": 1,
+	"base_image": "registry.codeocean.com/codeocean/pytorch:2.4.0-cuda12.4.0-mambaforge24.5.0-0-python3.12.4-ubuntu22.04",
+	"options": {}
+}

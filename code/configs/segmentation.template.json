@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "seed": 20260715,
+  "output_root": "/results/segmentation",
+  "checkpoint_root": "/results/segmentation/checkpoints",
+  "checkpoint_role_manifest": "/results/segmentation/checkpoint-roles.generated.json",
+  "data": {
+    "carvana_image_dirs": [
+      "/data/datasets/segmentation/carvana/imgs/train_hq"
+    ],
+    "carvana_mask_dirs": [
+      "/data/datasets/segmentation/carvana/masks/train_masks"
+    ],
+    "carvana_split_manifest": "/data/manifests/carvana-author-confirmed-split.json",
+    "allow_derived_carvana_split": false
+  },
+  "protocol": {
+    "eq4_alpha": 0.7,
+    "distillation_temperature": 5.0,
+    "eq6_direction": "equation_literal_current_minus_previous",
+    "eq6_temperature": 1.0,
+    "include_clean_teacher": true,
+    "rram_levels": [0.1, 0.2, 0.3, 0.4, 0.5],
+    "pcm_levels": [0.02, 0.04, 0.06, 0.08, 0.1],
+    "rram_student_level": 0.3,
+    "pcm_student_level": 0.06,
+    "segmentation": {
+      "teacher_epochs": 20,
+      "student_epochs": 30,
+      "batch_size": 16,
+      "num_workers": 2,
+      "image_height": 160,
+      "image_width": 240,
+      "resize_backend": "pil-bilinear",
+      "metric_aggregation": "per_image_mean",
+      "mtrd_bn_update_policy": "legacy_dual_branch",
+      "optimizer_profile": "manuscript-stated-sgd",
+      "feedback_split": "AUTHOR_CONFIRM_REQUIRED",
+      "feedback_split_options": ["carvana_test", "carvana_training"],
+      "feedback_sample_count": 0,
+      "checkpoint_selection": "final_epoch"
+    }
+  },
+  "simulation": {
+    "trial_count": 20,
+    "trial_count_author_verified": false,
+    "weight_bits": 8,
+    "dac_bits": 8,
+    "adc_bits": 8,
+    "rram_backend": "neurosim",
+    "neurosim_functional_profile": "paper-8bit",
+    "neurosim_post_training_quantization": {
+      "mode": "none"
+    },
+    "rram_realization_scope": "AUTHOR_CONFIRM_REQUIRED",
+    "rram_realization_scope_options": ["fixed_trial"],
+    "rram_realization_scope_author_verified": false,
+    "pcm_backend": "aihwkit-additive",
+    "pcm_realization_scope": "AUTHOR_CONFIRM_REQUIRED",
+    "pcm_realization_scope_options": ["fixed_trial"],
+    "pcm_realization_scope_author_verified": false,
+    "aihwkit_required_version": "1.1.0",
+    "runtime_validation_samples": 1024,
+    "runtime_validation_relative_std_tolerance": 0.1
+  },
+  "evaluation_checkpoints": {
+    "segmentation": {
+      "nominal": "/results/segmentation/checkpoints/segmentation/clean/teacher.pth",
+      "rram_mtrd": "/results/segmentation/checkpoints/segmentation/rram/mtrd.pth",
+      "pcm_mtrd": "/results/segmentation/checkpoints/segmentation/pcm/mtrd.pth"
+    }
+  }
+}

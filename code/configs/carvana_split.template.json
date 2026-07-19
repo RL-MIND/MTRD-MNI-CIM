@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "dataset": "Carvana Image Masking Challenge",
+  "author_verified": false,
+  "source_note": "Replace all arrays with the exact author-used Carvana split. Preflight intentionally fails while this template is incomplete.",
+  "expected_train_count": 4700,
+  "expected_test_count": 318,
+  "expected_excluded_count": 70,
+  "train_ids": [],
+  "test_ids": [],
+  "excluded_ids": []
+}
