@@ -1,9 +1,0 @@
-{
-	"version": 1,
-	"attached_datasets": [
-		{
-			"id": "0b1da330-69b8-45b5-9a87-7623febd4250",
-			"mount": "CIFAR"
-		}
-	]
-}

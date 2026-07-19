@@ -1,0 +1,143 @@
+'''Train CIFAR10 with PyTorch.'''
+import torch
+import torch.optim as optim
+import torch.backends.cudnn as cudnn
+from torch.utils.data import DataLoader
+import torchvision
+import torchvision.transforms as transforms
+from torchvision import datasets, transforms
+import os
+import argparse
+
+from models import *
+from utils import progress_bar
+
+
+parser = argparse.ArgumentParser(description='PyTorch CIFAR10 test')
+parser.add_argument('--precheckpoint_root', default='checkpoint/cifar10/vgg16_nonid/ckpt_cifar10_nonid_0.0_prune_my.pth', help='Load precheckpoint', type=str)
+parser.add_argument('--model_name', default='vgg16_nonid', help='choice a model to train and eval. eg: alenet, vgg16', type=str)
+parser.add_argument('--data_root', default='data/cifar10_dataset', help='Path to the train dataset', type=str)
+parser.add_argument('--num_workers', default=0, help='number of workers', type=int)
+parser.add_argument('--batch_size', default=64, help='number of batch size', type=int)
+
+args = parser.parse_args()
+
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+# Data
+print('==> Preparing data..')
+
+#test_data = MyData(args.data_root, train=False)
+
+#test_dataloader = DataLoader(test_data, batch_size=1, shuffle=False, num_workers=args.num_workers)
+#print('val dataset len: {}'.format(len(test_dataloader.dataset)))
+kwargs = {'num_workers': 1, 'pin_memory': True}
+train_loader = torch.utils.data.DataLoader(
+        datasets.CIFAR10('./data.cifar10', train=True, download=True,
+                       transform=transforms.Compose([
+                           transforms.Pad(4),
+                           transforms.RandomCrop(32),
+                           transforms.RandomHorizontalFlip(),
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+                       ])),
+        batch_size=args.batch_size, shuffle=True, **kwargs)
+test_loader = torch.utils.data.DataLoader(
+        datasets.CIFAR10('./data.cifar10', train=False, transform=transforms.Compose([
+                           transforms.ToTensor(),
+                           transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
+                       ])),
+        batch_size=args.batch_size, shuffle=True, **kwargs)
+
+# Model
+print('==> Building model..')
+if args.model_name == "VGG16":
+    net = vgg16()
+elif args.model_name == "vgg16_nonid": #ok
+    net = vgg16_nonid()
+elif args.model_name == "ResNet18": #ok
+    net = ResNet18()
+elif args.model_name == "ResNet34":  #ok
+    net = ResNet34()
+elif args.model_name == "ResNet50": #ok
+    net = ResNet50()
+elif args.model_name == "PreActResNet18": #ok
+    net = PreActResNet18()
+elif args.model_name == "PreActResNet34": #ok
+    net = PreActResNet34()
+elif args.model_name == "PreActResNet50": #ok
+    net = PreActResNet50()
+elif args.model_name == "PreActResNet101": #ok
+    net = PreActResNet101()
+elif args.model_name == "PreActResNet152": #ok
+    net = PreActResNet152()
+elif args.model_name == "GoogLeNet": #ok
+    net = GoogLeNet()
+elif args.model_name == "DenseNet121": #ok
+    net = DenseNet121()
+elif args.model_name == "ResNeXt29_2x64d": #ok
+    net = ResNeXt29_2x64d()
+elif args.model_name == "MobileNet": #ok
+    net = MobileNet()
+elif args.model_name == "MobileNetV2": #ok
+    net = MobileNetV2()
+elif args.model_name == "DPN92": #ok
+    net = DPN92()
+elif args.model_name == "ShuffleNetG2":
+    net = ShuffleNetG2()
+elif args.model_name == "SENet18":  #ok
+    net = SENet18()
+elif args.model_name == "ShuffleNetV2":  #ok
+    net = ShuffleNetV2(1)
+elif args.model_name == "EfficientNetB0":  #ok
+    net = EfficientNetB0()
+elif args.model_name == "RegNetX_200MF":  #ok
+    net = RegNetX_200MF()
+elif args.model_name == "SimpleDLA":  #ok
+    net = SimpleDLA()
+elif args.model_name == "LeNet":  #ok
+    net = LeNet()
+elif args.model_name == "AlexNet":  #ok
+    net = AlexNet()
+elif args.model_name == "AlexNetv2":  #ok
+    net = AlexNetv2()
+elif args.model_name=="vit_small":
+    net = ViT( image_size = 32, patch_size = 4, num_classes = 10, dim = int(512), depth = 6, heads = 8, mlp_dim = 512, dropout = 0.1, emb_dropout = 0.1)
+else:
+    print("Error: model name not define! Exit...")
+    exit(1)
+
+net = net.to(device)
+# if device == 'cuda':
+#     net = torch.nn.DataParallel(net)
+#     cudnn.benchmark = True
+
+
+# Load checkpoint.
+print('==> Resuming from checkpoint..')
+assert os.path.isdir('checkpoint'), 'Error: no checkpoint directory found!'
+checkpoint = torch.load(args.precheckpoint_root)
+net.load_state_dict(checkpoint)
+
+
+criterion = nn.CrossEntropyLoss()
+
+
+net.eval()
+test_loss = 0
+correct = 0
+total = 0
+with torch.no_grad():
+    for batch_idx, (inputs, targets) in enumerate(test_loader):
+        inputs, targets = inputs.to(device), targets.to(device)
+        outputs, _ = net(inputs,0.0)
+        loss = criterion(outputs, targets)
+
+        test_loss += loss.item()
+        _, predicted = outputs.max(1)
+        total += targets.size(0)
+        correct += predicted.eq(targets).sum().item()
+
+        progress_bar(batch_idx, len(test_loader), 'Loss: %.3f | Acc: %.3f%% (%d/%d)'
+                     % (test_loss / (batch_idx + 1), 100. * correct / total, correct, total))
+
