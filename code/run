@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+set -euo pipefail
+set -x
+
+export CUBLAS_WORKSPACE_CONFIG="${CUBLAS_WORKSPACE_CONFIG:-:4096:8}"
+export NEUROSIM_HOME="${NEUROSIM_HOME:-/code/NeuroSim}"
+
+MODE="${MTRD_MODE:-full}"
+DATA_ROOT="${MTRD_CIFAR_ROOT:-/data/CIFAR/cifar-10}"
+CHECKPOINT_ROOT="${MTRD_CHECKPOINT_ROOT:-/results/classification/cim/checkpoints}"
+EVALUATION_ROOT="${MTRD_EVALUATION_ROOT:-/results/classification/cim/evaluation}"
+SEED="${MTRD_SEED:-2025}"
+BATCH_SIZE="${MTRD_BATCH_SIZE:-64}"
+WORKERS="${MTRD_WORKERS:-4}"
+TEACHER_EPOCHS="${MTRD_TEACHER_EPOCHS:-200}"
+STUDENT_EPOCHS="${MTRD_STUDENT_EPOCHS:-300}"
+TRIALS="${MTRD_TRIALS:-20}"
+
+if [[ "$MODE" == "smoke" ]]; then
+  TEACHER_EPOCHS=1
+  STUDENT_EPOCHS=1
+  TRIALS=1
+elif [[ "$MODE" != "full" ]]; then
+  echo "MTRD_MODE must be full or smoke" >&2
+  exit 2
+fi
+
+teacher_extra=()
+student_extra=()
+if [[ "$TEACHER_EPOCHS" != "200" ]]; then
+  teacher_extra+=(--allow-nonpaper-training)
+fi
+if [[ "$STUDENT_EPOCHS" != "300" ]]; then
+  student_extra+=(--allow-nonpaper-training)
+fi
+
+python -u -m capsule.run simulate neurosim-functional --model vgg16
+
+python -u -m classification.run preflight \
+  --stage train \
+  --dataset cifar10 \
+  --device-type rram \
+  --data-root "$DATA_ROOT" \
+  --checkpoint-root "$CHECKPOINT_ROOT" \
+  --neurosim-home "$NEUROSIM_HOME" \
+  --output /results/classification/cim/preflight-train.json \
+  --strict
+
+python -u -m classification.run train-teachers \
+  --dataset cifar10 \
+  --device-type rram \
+  --data-root "$DATA_ROOT" \
+  --checkpoint-root "$CHECKPOINT_ROOT" \
+  --device auto \
+  --seed "$SEED" \
+  --batch-size "$BATCH_SIZE" \
+  --workers "$WORKERS" \
+  --epochs "$TEACHER_EPOCHS" \
+  --lr 0.01 \
+  "${teacher_extra[@]}"
+
+python -u -m classification.run train-student \
+  --dataset cifar10 \
+  --device-type rram \
+  --data-root "$DATA_ROOT" \
+  --checkpoint-root "$CHECKPOINT_ROOT" \
+  --device auto \
+  --seed "$SEED" \
+  --batch-size "$BATCH_SIZE" \
+  --workers "$WORKERS" \
+  --epochs "$STUDENT_EPOCHS" \
+  --lr 0.001 \
+  "${student_extra[@]}"
+
+ROLE_MANIFEST="$CHECKPOINT_ROOT/cifar10/rram/checkpoint-roles.generated.json"
+
+python -u -m classification.run preflight \
+  --stage evaluate \
+  --dataset cifar10 \
+  --device-type rram \
+  --data-root "$DATA_ROOT" \
+  --checkpoint-root "$CHECKPOINT_ROOT" \
+  --checkpoint-role-manifest "$ROLE_MANIFEST" \
+  --neurosim-home "$NEUROSIM_HOME" \
+  --output /results/classification/cim/preflight-evaluate.json \
+  --strict
+
+python -u -m classification.run evaluate \
+  --dataset cifar10 \
+  --device-type rram \
+  --backend neurosim \
+  --data-root "$DATA_ROOT" \
+  --checkpoint-root "$CHECKPOINT_ROOT" \
+  --checkpoint-role-manifest "$ROLE_MANIFEST" \
+  --checkpoint-role both \
+  --method-realization-policy paired \
+  --trials "$TRIALS" \
+  --realization-scope fixed-trial \
+  --quantization-bits 8 \
+  --neurosim-home "$NEUROSIM_HOME" \
+  --batch-size "$BATCH_SIZE" \
+  --workers "$WORKERS" \
+  --seed "$SEED" \
+  --output-dir "$EVALUATION_ROOT"

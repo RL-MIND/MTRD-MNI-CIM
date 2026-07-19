@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "seed": 20260715,
+  "output_root": "/results/denosing/released_ptq",
+  "checkpoint_root": "/results/denosing/released_ptq/checkpoints",
+  "checkpoint_role_manifest": "/results/denosing/released_ptq/checkpoint-roles.generated.json",
+  "data": {
+    "berkeley_root": "/data/datasets/denosing/berkeley400",
+    "denoising_h5": {
+      "mode": "regenerated-from-raw",
+      "directory": "/results/denosing/released_ptq/denoising_h5"
+    },
+    "set12_dir": "/data/datasets/denosing/berkeley400/Set12"
+  },
+  "protocol": {
+    "eq4_alpha": 0.7,
+    "distillation_temperature": 5.0,
+    "eq6_direction": "equation_literal_current_minus_previous",
+    "eq6_temperature": 1.0,
+    "include_clean_teacher": true,
+    "rram_levels": [0.1, 0.2, 0.3, 0.4, 0.5],
+    "pcm_levels": [0.02, 0.04, 0.06, 0.08, 0.1],
+    "rram_student_level": 0.3,
+    "pcm_student_level": 0.06,
+    "denoising": {
+      "teacher_epochs": 50,
+      "student_epochs": 80,
+      "batch_size": 128,
+      "num_workers": 4,
+      "image_noise_std_255": 25.0,
+      "evaluation_input_noise": "released_per_trial",
+      "patch_size": 40,
+      "patch_stride": 10,
+      "teacher_optimizer": "adam",
+      "student_optimizer": "adam",
+      "initial_learning_rate": 0.001,
+      "teacher_lr_milestones": [30],
+      "student_lr_milestones": [30],
+      "mtrd_profile": "released_bh4_source_semantics",
+      "mtrd_profile_parameters": {},
+      "feedback_split": "set12_test",
+      "feedback_split_options": ["set12_test", "berkeley_training"],
+      "feedback_sample_count": 0,
+      "checkpoint_selection": "final_epoch"
+    }
+  },
+  "simulation": {
+    "trial_count": 3,
+    "trial_count_author_verified": false,
+    "weight_bits": 8,
+    "dac_bits": 8,
+    "adc_bits": 8,
+    "rram_backend": "neurosim",
+    "neurosim_functional_profile": "released-legacy",
+    "neurosim_post_training_quantization": {
+      "mode": "released-eager-static",
+      "activation_bits": 6,
+      "weight_bits": 6,
+      "calibration_data": "evaluation",
+      "engine": "fbgemm"
+    },
+    "rram_realization_scope": "fixed_trial",
+    "rram_realization_scope_options": ["fixed_trial"],
+    "rram_realization_scope_author_verified": false,
+    "pcm_backend": "aihwkit-additive",
+    "pcm_realization_scope": "fixed_trial",
+    "pcm_realization_scope_options": ["fixed_trial"],
+    "pcm_realization_scope_author_verified": false,
+    "aihwkit_required_version": "1.1.0",
+    "runtime_validation_samples": 1024,
+    "runtime_validation_relative_std_tolerance": 0.1
+  },
+  "evaluation_checkpoints": {
+    "denoising": {
+      "nominal": "/results/denosing/released_ptq/checkpoints/denoising/clean/teacher.pth",
+      "rram_mtrd": "/results/denosing/released_ptq/checkpoints/denoising/rram/mtrd.pth",
+      "pcm_mtrd": "/results/denosing/released_ptq/checkpoints/denoising/pcm/mtrd.pth"
+    }
+  }
+}
